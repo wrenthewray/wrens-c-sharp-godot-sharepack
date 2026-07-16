@@ -1,0 +1,59 @@
+{
+	"categories": [
+		{
+			"uuid": "08155f1e-5edc-4d53-be00-c9bd62a9b7b2",
+			"title": "Task",
+			"color": "e2241a"
+		}
+	],
+	"stages": [
+		{
+			"uuid": "2a584400-cff8-4129-830d-89a5b026afe6",
+			"title": "Todo",
+			"tasks": [
+				"9ba52897-f333-4f1d-a53f-0623c47940b0"
+			]
+		},
+		{
+			"uuid": "2112be59-07fa-4952-8b41-42bba795f927",
+			"title": "Doing",
+			"tasks": [
+				"622d0e1e-f14f-4cbb-af5e-8aed65041d70"
+			]
+		},
+		{
+			"uuid": "f77cc251-c393-43ef-99df-3e63506d7300",
+			"title": "Done",
+			"tasks": []
+		}
+	],
+	"tasks": [
+		{
+			"uuid": "9ba52897-f333-4f1d-a53f-0623c47940b0",
+			"title": "Create git repo",
+			"description": "",
+			"category": "08155f1e-5edc-4d53-be00-c9bd62a9b7b2",
+			"steps": []
+		},
+		{
+			"uuid": "622d0e1e-f14f-4cbb-af5e-8aed65041d70",
+			"title": "create easy code sharepack",
+			"description": "",
+			"category": "08155f1e-5edc-4d53-be00-c9bd62a9b7b2",
+			"steps": []
+		}
+	],
+	"layout": {
+		"columns": [
+			[
+				"2a584400-cff8-4129-830d-89a5b026afe6"
+			],
+			[
+				"2112be59-07fa-4952-8b41-42bba795f927"
+			],
+			[
+				"f77cc251-c393-43ef-99df-3e63506d7300"
+			]
+		]
+	}
+}

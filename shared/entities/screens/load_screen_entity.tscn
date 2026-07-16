@@ -1,0 +1,138 @@
+[gd_scene format=3 uid="uid://cw55b4of1035i"]
+
+[ext_resource type="Script" uid="uid://cxjjajfsdnx2p" path="res://shared/entities/screens/LoadScreenEntity.cs" id="1_4qdmo"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e0kae"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6focv"]
+bg_color = Color(0.072842635, 0.072842635, 0.072842635, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q3fyx"]
+bg_color = Color(0.51945883, 0.99999994, 0.5572795, 1)
+
+[sub_resource type="Animation" id="Animation_pt4yd"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BlackScreen:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BlackScreen:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_vwt2p"]
+resource_name = "fade_away"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BlackScreen:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BlackScreen:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_4qdmo"]
+resource_name = "fade_to_black"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BlackScreen:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.033333335),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BlackScreen:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_pt4yd"]
+_data = {
+&"RESET": SubResource("Animation_pt4yd"),
+&"fade_away": SubResource("Animation_vwt2p"),
+&"fade_to_black": SubResource("Animation_4qdmo")
+}
+
+[node name="LoadScreenEntity" type="CanvasLayer" unique_id=1907887051 node_paths=PackedStringArray("animator")]
+layer = 2
+script = ExtResource("1_4qdmo")
+animator = NodePath("ScreenAnimator")
+
+[node name="BlackScreen" type="Panel" parent="." unique_id=538701461]
+visible = false
+modulate = Color(1, 1, 1, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_e0kae")
+
+[node name="ProgressBar" type="ProgressBar" parent="BlackScreen" unique_id=205279371]
+custom_minimum_size = Vector2(900, 50)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -450.0
+offset_top = -123.0
+offset_right = 450.0
+offset_bottom = -73.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/background = SubResource("StyleBoxFlat_6focv")
+theme_override_styles/fill = SubResource("StyleBoxFlat_q3fyx")
+show_percentage = false
+
+[node name="ScreenAnimator" type="AnimationPlayer" parent="." unique_id=162795257]
+libraries/ = SubResource("AnimationLibrary_pt4yd")
