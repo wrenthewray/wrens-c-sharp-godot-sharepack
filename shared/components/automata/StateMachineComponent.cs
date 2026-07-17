@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Godot;
 using Godot.Collections;
 using Shared.Models.Exceptions;
@@ -46,7 +47,8 @@ namespace Shared.Components.Automata
                 if (baseState == null)
                     baseState = state;
                 states.Add(state.ToString(), state);
-                Connect(SignalName.Init, Callable.From<Array<GodotObject>>(state.Initialize));
+                state.TransitionToState += TransitionToState;
+                Init += state.Initialize;
             }
             EmitInit();
             CurrentState = baseState;
@@ -62,8 +64,12 @@ namespace Shared.Components.Automata
         {
             CurrentState.PhysicsUpdate(delta);
         }
-
-        public void TransitionToState(string stateName)
+        /// <summary>
+        /// Transitions to a new state using the state's name.
+        /// </summary>
+        /// <param name="stateName">State to transition to.</param>
+        /// <exception cref=""></exception>
+        internal virtual void TransitionToState(string stateName)
         {
             if (!StateNameIsValid(stateName))
                 return;
@@ -87,6 +93,16 @@ namespace Shared.Components.Automata
         public bool CurrentStateIs(T state)
         {
             return CurrentState == state;
+        }
+        public bool CurrentStateIs(string stateName)
+        {
+            if(!StateNameIsValid(stateName))
+                throw new KeyNotFoundException($"The state {stateName} doesn't exist in the list of possible states.");
+            return CurrentState == states[stateName];
+        }
+        public bool CurrentStateIsBaseState()
+        {
+            return CurrentState == baseState;
         }
         public bool StateNameIsValid(string stateName)
         {

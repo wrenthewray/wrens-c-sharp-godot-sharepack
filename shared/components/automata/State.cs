@@ -14,6 +14,7 @@ namespace Shared.Components.Automata
     [GlobalClass, Icon("res://addons/at-icons/node/at.svg")]
     public abstract partial class State : Resource
     {
+        [Signal] public delegate void TransitionToStateEventHandler(string stateName);
         /// <summary>
         /// Called when the state is entered.
         /// </summary>
@@ -76,5 +77,10 @@ namespace Shared.Components.Automata
         /// <param name="dependencies">An array of godot objects to pass to the
         /// states during dependency injection.</param>
         public abstract void Initialize(Array<GodotObject> dependencies);
+
+        protected virtual void TransitionToState(string stateName)
+        {
+            EmitSignal(SignalName.TransitionToState, stateName);
+        }
     }
 }
