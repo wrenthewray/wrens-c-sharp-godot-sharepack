@@ -1,4 +1,4 @@
-![alt text](https://github.com/wrenthewray/wrens-c-sharp-godot-sharepack/blob/main/title-thing.png "Wren's C# Godot Sharepack Logo")
+![alt text](https://github.com/wrenthewray/wrens-c-sharp-godot-sharepack/blob/main/title-bumper.png "Wren's C# Godot Sharepack Logo")
 
 Hi everyone! This is a work in progress project for a bunch of different components, entities, managers, and plugins I built (or took with credits at the bottom thank you everyone) and like to share between projects. Feel free to use and change as much as you'd like, and if you have any interesting ideas, please feel free to create a PR and offer to merge into this pack! 
 
