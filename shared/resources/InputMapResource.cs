@@ -1,13 +1,16 @@
 using System;
+using System.Linq;
 using Godot;
 using Godot.Collections;
-using Shared.Managers.Data.Options;
-using Shared.Resources.Data;
 
 namespace Shared.Resources;
+/// <summary>
+/// A resource that is used to save a list of all the actions defined
+/// in the <see cref="InputMap"/> 
+/// </summary>
 
 [GlobalClass]
-public partial class InputEventMap : Resource
+public partial class InputMapResource : Resource
 {
     [Export] private Dictionary<string, Array<InputEvent>> actions = new();
 
@@ -15,6 +18,7 @@ public partial class InputEventMap : Resource
     {
         if(ContainsAction(action))
             throw new Exception($"Action {action} already exists in the map!");
+
         actions.Add(action, events);
         SyncEventMapWithInputMap();
     }
@@ -33,17 +37,26 @@ public partial class InputEventMap : Resource
     {
         if(!ContainsAction(action))
             AddAction(action, [newEvent]);
-        foreach(InputEvent inputEvent in actions[action])
-        {
-            if(newEvent.GetType().Name == inputEvent.GetType().Name)
-            {
-                actions[action].Remove(inputEvent);
-                actions[action].Add(newEvent);
-                break;
-            }
-        }
+        
+        InputEvent inputEventMatch = actions[action].First((inputEvent) => EventsMatch(newEvent, inputEvent));
+        if(inputEventMatch != null)
+            ReplaceInputEvent(action, newEvent, inputEventMatch);
+
         SyncActionWithInputMap(action);
     }
+
+    private static bool EventsMatch(InputEvent newEvent, InputEvent inputEvent)
+    {
+        return newEvent.GetType().Name == inputEvent.GetType().Name;
+    }
+
+    private void ReplaceInputEvent(string action, InputEvent newEvent, InputEvent oldEvent)
+    {
+        actions[action].Remove(oldEvent);
+        actions[action].Add(newEvent);
+    }
+
+
     private void SyncActionWithInputMap(string action)
     {
         if(!InputMap.HasAction(action))

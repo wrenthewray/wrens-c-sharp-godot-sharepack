@@ -7,7 +7,7 @@ using Shared.Resources.Exceptions;
 namespace Shared.Components.Automata;
 
 [Icon("res://addons/at-icons/node/conveyor_belt.svg")]
-public partial class QueueAutomataComponent<[MustBeVariant] T> : StateMachineComponent<T> where T : QueuableState
+public abstract partial class QueueAutomataComponent<[MustBeVariant] T> : StateMachineComponent<T> where T : QueuableState
 {
     protected readonly Queue<T> stateQueue = new();
     public override void _Ready()

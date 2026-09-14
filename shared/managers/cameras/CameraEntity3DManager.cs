@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Godot;
+using Shared.Buses;
 using Shared.Entities.Cameras;
 
 namespace Shared.Managers.Cameras;
@@ -19,8 +20,6 @@ public static class CameraEntity3DManager
     private static readonly List<CameraEntity3D> cameras = new();
 
     private static CameraEntity3D currentCamera;
-    private static Action<CameraEntity3D> beginChangeCameraEvent;
-    private static Action<CameraEntity3D> cameraChangedEvent = SetCurrentCamera;
 
     /// <summary>
     /// The current camera that the player is seeing from. When set,
@@ -35,16 +34,7 @@ public static class CameraEntity3DManager
             currentCamera.MakeCurrent();
         }
     }
-    /// <summary>
-    /// Broadcast when changing to a new camera. Attached in the 
-    /// <see cref="TransitionCameraEntity3D"/> 
-    /// </summary>
-    public static Action<CameraEntity3D> BeginChangeCameraEvent { get => beginChangeCameraEvent; set => beginChangeCameraEvent = value; }
-    /// <summary>
-    /// Broadcast when we're finished changing cameras. Attached to
-    /// the <see cref="SetCurrentCamera"/>
-    /// </summary>
-    public static Action<CameraEntity3D> CameraChangedEvent { get => cameraChangedEvent; set => cameraChangedEvent = value; }
+
 
     /// <summary>
     /// Called by a <see cref="CameraEntity3D"/> when it enters the tree. Adds the camera to the list of cameras.
@@ -71,21 +61,12 @@ public static class CameraEntity3DManager
         OnCameraRemoved(camera);
     }
     
-    public static void BroadcastBeginChangeCameraEvent(CameraEntity3D toCamera3D)
-    {
-        BeginChangeCameraEvent?.Invoke(toCamera3D);
-    }
-
-    public static void BroadcastCameraChangedEvent(CameraEntity3D toCamera3D)
-    {
-        CameraChangedEvent?.Invoke(toCamera3D);
-    }
     /// <summary>
     /// Internal method that sets the current camera. Triggered 
     /// by the <see cref="CameraChangedEvent"/>.
     /// </summary>
     /// <param name="toCamera3D">The camera to change to.</param>
-    private static void SetCurrentCamera(CameraEntity3D toCamera3D)
+    public static void SetCurrentCamera(CameraEntity3D toCamera3D)
     {
         CurrentCamera = toCamera3D;
     }
@@ -107,16 +88,10 @@ public static class CameraEntity3DManager
     {
         if(priorityOverrided)
             return;
-        CameraEntity3D highestPriorityCamera = CurrentCamera;
-        foreach(CameraEntity3D camera in cameras)
-        {
-            if(camera == highestPriorityCamera)
-                continue;
-            if(camera.Priority > highestPriorityCamera.Priority)
-                highestPriorityCamera = camera;
-        }
+    
+        CameraEntity3D highestPriorityCamera = GetHighestPriorityCamera();
         if(highestPriorityCamera != CurrentCamera)
-            BroadcastBeginChangeCameraEvent(highestPriorityCamera);
+            CameraBus.BroadcastBeginChangeCameraEvent(highestPriorityCamera);
     }
     private static void OnPriorityOverride(CameraEntity3D prioritizedCamera)
     {
@@ -136,27 +111,33 @@ public static class CameraEntity3DManager
 
         priorityOverrided = true;
         if(!CameraIsCurrentCamera(prioritizedCamera))
-            BroadcastBeginChangeCameraEvent(prioritizedCamera);
+            CameraBus.BroadcastBeginChangeCameraEvent(prioritizedCamera);
     }
     private async static void OnCameraAdded(CameraEntity3D cameraEntity3D)
     {
         cameraEntity3D.PriorityOverrided += OnPriorityOverride;
         cameraEntity3D.PriorityUpdated += OnPriorityUpdated;
 
-        CameraEntity3D highestPriorityCamera = cameras.MaxBy(camera => camera.Priority);
-        if(await DoubleCheckPriorityOnCameraAdded(highestPriorityCamera))
-            if(highestPriorityCamera.tweenOnLoad)
-                BroadcastBeginChangeCameraEvent(highestPriorityCamera);
+        CameraEntity3D highestPriorityCamera = GetHighestPriorityCamera();
+        if (await DoubleCheckPriorityOnCameraAdded(highestPriorityCamera))
+            if (highestPriorityCamera.tweenOnLoad)
+                CameraBus.BroadcastBeginChangeCameraEvent(highestPriorityCamera);
             else
-                BroadcastCameraChangedEvent(highestPriorityCamera);
-        
+                CameraBus.BroadcastCameraChangedEvent(highestPriorityCamera);
+
     }
     private async static Task<bool> DoubleCheckPriorityOnCameraAdded(CameraEntity3D cameraEntity3D)
     {
         await Task.Delay(250);
-        CameraEntity3D highestPriorityCamera = cameras.MaxBy(camera => camera.Priority);
+        CameraEntity3D highestPriorityCamera = GetHighestPriorityCamera();
         return highestPriorityCamera == cameraEntity3D;
     }
+
+    private static CameraEntity3D GetHighestPriorityCamera()
+    {
+        return cameras.MaxBy(camera => camera.Priority);
+    }
+
     private static void OnCameraRemoved(CameraEntity3D cameraEntity3D)
     {
         cameraEntity3D.PriorityOverrided -= OnPriorityOverride;

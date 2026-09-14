@@ -1,66 +1,65 @@
 using System.Threading.Tasks;
 using Godot;
 using static Godot.ResourceLoader;
-using Array = Godot.Collections.Array;
 
 namespace Shared.Managers.Data;
 
-public static class BackgroundLoadingManager
+public static class BackgroundLoadManager<T> where T : Resource
 {
-    public static PackedScene LoadResource(string scenePath)
+    public static T LoadResource(string scenePath)
     {
         if(HasCached(scenePath))
-            return (PackedScene)LoadThreadedGet(scenePath);
+            return (T) Load(scenePath);
         return LoadResourceRecursive(scenePath);
     }
 
-    private static PackedScene LoadResourceRecursive(string scenePath)
+    private static T LoadResourceRecursive(string scenePath)
     {
         ThreadLoadStatus loadStatus = LoadThreadedGetStatus(scenePath);
-        switch ((int)loadStatus)
+        switch (loadStatus)
         {
-            case 2:
+            case ThreadLoadStatus.Failed:
                 // error in creation
                 throw new System.Exception(nameof(loadStatus));
-            case 0:
+            case ThreadLoadStatus.InvalidResource:
                 Error state = LoadThreadedRequest(scenePath);
                 if (state == Error.Ok)
-                    goto case 1;
+                    goto case ThreadLoadStatus.InProgress;
                 else
                     throw new System.Exception(nameof(state));
-            case 1:
+            case ThreadLoadStatus.InProgress:
                 return LoadResourceRecursive(scenePath);
-            case 3:
+            case ThreadLoadStatus.Loaded:
             default:
-                return (PackedScene)LoadThreadedGet(scenePath);
+                return (T)LoadThreadedGet(scenePath);
         }
     }
 
-    public static async Task<PackedScene> LoadResourceAsync(string scenePath)
+    public static async Task<T> LoadResourceAsync(string scenePath)
     {
         if(HasCached(scenePath))
-            return (PackedScene)LoadThreadedGet(scenePath);
+            return (T)Load(scenePath);
         return await LoadResourceRecursiveAsync(scenePath);
     }
-    private static async Task<PackedScene> LoadResourceRecursiveAsync(string scenePath)
+    private static async Task<T> LoadResourceRecursiveAsync(string scenePath)
     {
         ThreadLoadStatus loadStatus = LoadThreadedGetStatus(scenePath);
-        switch ((int)loadStatus)
+        switch (loadStatus)
         {
-            case 2:
+            case ThreadLoadStatus.Failed:
                 // error in creation
                 throw new System.Exception(nameof(loadStatus));
-            case 0:
+            case ThreadLoadStatus.InvalidResource:
                 Error state = LoadThreadedRequest(scenePath);
                 if (state == Error.Ok)
-                    goto case 1;
+                    goto case ThreadLoadStatus.InProgress;
                 else
                     throw new System.Exception(nameof(state));
-            case 1:
+            case ThreadLoadStatus.InProgress:
                 return await LoadResourceRecursiveAsync(scenePath);
-            case 3:
+            case ThreadLoadStatus.Loaded:
             default:
-                return (PackedScene)LoadThreadedGet(scenePath);
+                return (T)LoadThreadedGet(scenePath);
         }
     }
 }

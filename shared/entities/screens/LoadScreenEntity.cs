@@ -1,6 +1,5 @@
-using System;
-using System.Threading.Tasks;
 using Godot;
+using Shared.Buses;
 using Shared.Managers.Data;
 
 
@@ -20,49 +19,49 @@ public partial class LoadScreenEntity : CanvasLayer
 
     public override void _Ready()
     {
-        LoadScreenManager.LoadNewSceneEvent += StartLoading;
-        LoadScreenManager.LoadingStartedEvent += () => loading = true;
+        LoadScreenBus.LoadNewSceneEvent += LoadNewScene;
+        LoadScreenBus.LoadingStartedEvent += () => loading = true;
 
-        LoadScreenManager.ProgressChangedEvent += Loading;
-        LoadScreenManager.LoadingDoneEvent += StartFadeToScreen;
-        animator.AnimationFinished += IsFinished;
+        LoadScreenBus.ProgressChangedEvent += ProgressChanged;
+        LoadScreenBus.LoadingDoneEvent += LoadingDone;
+        animator.AnimationFinished += AnimationFinished;
 
         animator.Queue(ScreenAnimation.Reset);
     }
     public override void _Process(double delta)
     {
         base._Process(delta);
-        CheckLoading();
+        CheckProgress();
     }
-    private void IsFinished(StringName animName)
+    private void AnimationFinished(StringName animName)
     {
         if (animName == ScreenAnimation.FadeToBlack) 
             LoadScreenManager.StartLoadingScene(scenePath);
         else if (animName == ScreenAnimation.FadeAway) 
             animator.Queue(ScreenAnimation.Reset);
     }
-    private void CheckLoading()
+    private void CheckProgress()
     {
         if (!loading) 
             return;
         loading = LoadScreenManager.LoadProgress(scenePath);
     }
 
-    public void StartLoading(string scenePath)
+    public void LoadNewScene(string scenePath)
     {
-        this.scenePath = scenePath;
-        
-        animator.Queue(ScreenAnimation.FadeToBlack);
         progressBar.Value = 0;
+        this.scenePath = scenePath;
+        animator.Queue(ScreenAnimation.FadeToBlack);
     }
-    private void Loading(Variant progress)
+    private void ProgressChanged(Variant progress)
     {
-        if (loading == false) loading = true;
+        if (loading == false) 
+            loading = true;
         if (Mathf.Abs(progressBar.Value - (float)progress * 100f) >= 0.5f)
             progressBar.Value = (float)progress * 100;
         
     }
-    public void StartFadeToScreen()
+    public void LoadingDone()
     {
         GetTree().ChangeSceneToPacked(LoadScreenManager.GetLoadedScene(scenePath));
         animator.Queue(ScreenAnimation.FadeAway);

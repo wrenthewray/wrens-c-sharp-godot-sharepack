@@ -7,7 +7,8 @@ namespace Shared.Resources;
 /// path to a scene and a Vector3 that represents the location as
 /// a point in that scene.
 /// </summary>
-public class Location
+[GlobalClass, Icon("res://addons/at-icons/node3d/location.svg")]
+public partial class Location3D : Resource
 {
     /// <summary>
     /// The filepath to the scene that the location is in.
@@ -19,8 +20,8 @@ public class Location
     /// </summary>
     public Vector3 position;
 
-    public Location() { }
-    public Location(string scenePath, Vector3 position)
+    public Location3D() { }
+    public Location3D(string scenePath, Vector3 position)
     {
         this.scenePath = scenePath;
         this.position = position;

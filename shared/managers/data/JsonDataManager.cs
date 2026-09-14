@@ -7,9 +7,10 @@ namespace Shared.Managers.Data;
 
 /// <summary>
 /// This class is a static and generic file manager class that reads and writes 
-/// to files using Godot's <see cref="FileAccess"/> class.
+/// to files using Godot's <see cref="FileAccess"/> class. In this class, files 
+/// are read and written to using JSON serialization and deserialization.
 /// </summary>
-public static class FileManager
+public static class JsonDataManager
 {
     private static FileAccess OpenFile(string filePath, FileAccess.ModeFlags flag = FileAccess.ModeFlags.Read)
     {

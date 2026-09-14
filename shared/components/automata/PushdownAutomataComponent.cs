@@ -18,9 +18,9 @@ namespace Shared.Components.Automata;
 /// needs to do to transition between states.
 /// </summary>
 /// <typeparam name="T">The type of state the machine is implementing. This type has 
-/// to derive from the <see cref="State"/> class.</typeparam>
+/// to derive from the <see cref="StackableState"/> class.</typeparam>
 [Icon("res://addons/at-icons/node/arrow_down_to_bracket.svg")]
-public partial class PushdownAutomataComponent<[MustBeVariant] T> : StateMachineComponent<T> where T : StackableState
+public abstract partial class PushdownAutomataComponent<[MustBeVariant] T> : StateMachineComponent<T> where T : StackableState
 {
     protected readonly Stack<T> stateStack = new();
 

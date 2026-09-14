@@ -1,4 +1,5 @@
 using Godot;
+using Shared.Buses;
 using Shared.Managers.Cameras;
 
 namespace Shared.Entities.Cameras;
@@ -14,19 +15,15 @@ public partial class TransitionCameraEntity3D : Camera3D
     public static TransitionCameraEntity3D Instance;
     public override void _EnterTree()
     {
-        base._EnterTree();
-
-        CameraEntity3DManager.BeginChangeCameraEvent += TransitionToCamera;
         Instance = this;
-    }
-    public override void _Ready()
-    {
-        base._Ready();
+
+        base._EnterTree();
+        CameraBus.BeginChangeCameraEvent += TransitionToCamera;
     }
     public override void _ExitTree()
     {
         base._ExitTree();
-        CameraEntity3DManager.BeginChangeCameraEvent -= TransitionToCamera;
+        CameraBus.BeginChangeCameraEvent -= TransitionToCamera;
     }
 
     /// <summary>
@@ -41,7 +38,7 @@ public partial class TransitionCameraEntity3D : Camera3D
         { // skip transition when the camera is set to not tween to. 
           // This is useful for cutscenes and other situations where 
           // you want to instantly switch cameras.
-            CameraEntity3DManager.BroadcastCameraChangedEvent(toCamera3D);
+            CameraBus.BroadcastCameraChangedEvent(toCamera3D);
             return;
         }
 
@@ -92,6 +89,6 @@ public partial class TransitionCameraEntity3D : Camera3D
         transitionVOffsetTween.TweenProperty(this, "v_offset", targetVOffset, duration).SetTrans(transitionType).SetEase(easeType);
         
         await ToSignal(transitionTween, Tween.SignalName.Finished);
-        CameraEntity3DManager.BroadcastCameraChangedEvent(toCamera3D);
+        CameraBus.BroadcastCameraChangedEvent(toCamera3D);
     }
 }

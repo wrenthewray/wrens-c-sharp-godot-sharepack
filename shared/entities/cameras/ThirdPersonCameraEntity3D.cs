@@ -30,7 +30,7 @@ public partial class ThirdPersonCameraEntity3D : CameraEntity3D
     {
         base._UnhandledInput(@event);
 
-        if(!CameraEntity3DManager.CameraIsCurrentCamera(this))
+        if(!CameraIsActive())
             return;
             
         if(@event is InputEventMouseMotion inputEventMouseMotion)

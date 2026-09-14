@@ -1,4 +1,5 @@
 using Godot;
+using Shared.Buses;
 using Shared.Managers.Cameras;
 using Shared.Resources.Data;
 
@@ -63,7 +64,7 @@ public abstract partial class CameraEntity3D : Camera3D
     /// </summary>
     [Export] internal bool tweenOnLoad = false;
     [Export] internal bool tweenTo = true;
-    [Export] internal TweenData tween = new();
+    [Export] internal TweenResource tween = new();
 
     public override void _Ready()
     {
@@ -73,16 +74,20 @@ public abstract partial class CameraEntity3D : Camera3D
     {
         base._EnterTree();
         CameraEntity3DManager.AddCamera(this);
-        CameraEntity3DManager.CameraChangedEvent += OnCameraChanged;
+        CameraBus.CameraChangedEvent += OnCameraChanged;
     }
     public override void _ExitTree()
     {
         base._ExitTree();
+        CameraBus.CameraChangedEvent -= OnCameraChanged;
         CameraEntity3DManager.RemoveCamera(this);
-        CameraEntity3DManager.CameraChangedEvent -= OnCameraChanged;
     }
     internal virtual void OnCameraChanged(CameraEntity3D toCamera3D)
     {
         // empty for now
+    }
+    internal bool CameraIsActive()
+    {
+        return CameraEntity3DManager.CameraIsCurrentCamera(this);
     }
 }

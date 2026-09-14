@@ -54,7 +54,7 @@ public partial class RTSCameraEntity3D : CameraEntity3D
     {
         base._Process(delta);
         
-        if(!CameraEntity3DManager.CameraIsCurrentCamera(this))
+        if(!CameraIsActive())
             return;
         springArm3D.SpringLength = Mathf.Clamp(springArm3D.SpringLength, zoomLimit.X, zoomLimit.Y);
     }

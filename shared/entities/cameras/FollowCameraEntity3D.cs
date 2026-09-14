@@ -5,7 +5,7 @@ using Shared.Resources.Data;
 namespace Shared.Entities.Cameras;
 
 /// <summary>
-/// This is a camera that follows a target. 
+/// A camera that follows a target. 
 /// </summary>
 [GlobalClass]
 public partial class FollowCameraEntity3D : CameraEntity3D
@@ -19,7 +19,8 @@ public partial class FollowCameraEntity3D : CameraEntity3D
     public override void _Process(double delta)
     {
         base._Process(delta);
-
+        if(!CameraIsActive())
+            return;
         LookAtFromPosition(GlobalPosition, target.GlobalPosition, Vector3.Up);
     }
 }
