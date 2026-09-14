@@ -14,13 +14,21 @@ public partial class InputMapResource : Resource
 {
     [Export] private Dictionary<string, Array<InputEvent>> actions = new();
 
+    public InputMapResource()
+    {
+        // get a list of our custom actions and add it to the dictionary.
+        foreach (string action in InputMap.GetActions().Where((action) => !((string)action).Contains("ui_")))
+            AddAction(action, InputMap.ActionGetEvents(action));
+        
+    }
+
     public void AddAction(string action, Array<InputEvent> events)
     {
         if(ContainsAction(action))
             throw new Exception($"Action {action} already exists in the map!");
 
         actions.Add(action, events);
-        SyncEventMapWithInputMap();
+        SyncThisWithInputMap();
     }
     public Array<InputEvent> GetActionEvents(string action)
     {
@@ -33,7 +41,7 @@ public partial class InputMapResource : Resource
     {
         return actions.ContainsKey(action);
     }
-    public void ChangeActionEvent(string action, InputEvent newEvent)
+    public void SwitchActionEvent(string action, InputEvent newEvent)
     {
         if(!ContainsAction(action))
             AddAction(action, [newEvent]);
@@ -65,7 +73,7 @@ public partial class InputMapResource : Resource
         foreach(InputEvent inputEvent in actions[action])
             InputMap.ActionAddEvent(action, inputEvent);
     }
-    internal void SyncEventMapWithInputMap()
+    internal void SyncThisWithInputMap()
     {
         foreach(string action in actions.Keys)
             SyncActionWithInputMap(action);

@@ -5,7 +5,7 @@
         "**/.hg": true,
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
-        "**/.cs.uid": true,
+        "**/*.cs.uid": true,
     },
     "hide-files.files": []
 }

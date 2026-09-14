@@ -3,7 +3,11 @@ using Godot.Collections;
 using Shared.Resources;
 
 namespace Shared.Managers.Data.Options;
-
+/// <summary>
+/// This class stores a dictionary of input actions and their associated
+/// input events. This is mostly used by option menus to save and load 
+/// keybinds.
+/// </summary>
 public static class InputMapManager
 {
     private static readonly string FILE_PATH = "user://map.tres";
@@ -31,7 +35,7 @@ public static class InputMapManager
 
     internal static void ChangeActionEvent(string action, InputEvent inputEvent)
     {
-        InputMapResource.ChangeActionEvent(action, inputEvent);
+        InputMapResource.SwitchActionEvent(action, inputEvent);
         SaveInputMapResource();
     }
     internal static Array<InputEvent> GetActionEvents(string action)
@@ -45,7 +49,7 @@ public static class InputMapManager
     }
     public static void SyncInputMapResource()
     {
-        InputMapResource.SyncEventMapWithInputMap();
+        InputMapResource.SyncThisWithInputMap();
     }
     internal static void SaveInputMapResource()
     {
