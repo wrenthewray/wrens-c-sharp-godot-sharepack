@@ -1,5 +1,5 @@
 using Godot;
-using Shared.Managers.Pools;
+using Shared.Systems;
 
 namespace Shared.Entities.Generics;
 
@@ -18,7 +18,7 @@ public abstract partial class PoolableEntity<T> : Node where T : PoolableEntity<
     override public void _EnterTree()
     {
         base._EnterTree();
-        ObjectPoolManager<T>.SetObjectSceneReference(SceneFilePath);
+        EntityPoolSystem<T>.SetEntitySceneReference(SceneFilePath);
         TreeExited += PushSelf;
     }
 
@@ -30,6 +30,6 @@ public abstract partial class PoolableEntity<T> : Node where T : PoolableEntity<
 
     internal virtual void PushSelf()
     {
-        ObjectPoolManager<T>.Push((T)this);
+        EntityPoolSystem<T>.Push((T)this);
     }
 }

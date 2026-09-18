@@ -1,5 +1,3 @@
-using Godot;
-using Shared.Managers.Pools;
 
 namespace Shared.Entities.Generics;
 

@@ -1,6 +1,6 @@
 using System;
 using Shared.Entities.Cameras;
-using Shared.Managers.Cameras;
+using Shared.Systems;
 
 namespace Shared.Buses;
 
@@ -10,28 +10,28 @@ namespace Shared.Buses;
 /// </summary>
 public static class CameraBus
 {
-    private static Action<CameraEntity3D> beginChangeCameraEvent;
-    private static Action<CameraEntity3D> cameraChangedEvent = CameraEntity3DManager.SetCurrentCamera;
+    private static Action<Camera3DEntity> beginChangeCameraEvent;
+    private static Action<Camera3DEntity> cameraChangedEvent = Camera3DEntityPrioritySystem.SetCurrentCamera;
 
     /// <summary>
     /// Broadcast when we begin changing cameras, so we can transition between the
-    /// two cameras. Attached to the <see cref="TransitionCameraEntity3D.TransitionToCamera"/>
+    /// two cameras. Attached to the <see cref="TransitionCamera3DEntity.TransitionToCamera"/>
     /// method.
     /// </summary>
-    public static Action<CameraEntity3D> BeginChangeCameraEvent { get => beginChangeCameraEvent; set => beginChangeCameraEvent = value; }
+    public static Action<Camera3DEntity> BeginChangeCameraEvent { get => beginChangeCameraEvent; set => beginChangeCameraEvent = value; }
     /// <summary>
-    /// Broadcast when the <see cref="TransitionCameraEntity3D.TransitionToCamera"/> 
+    /// Broadcast when the <see cref="TransitionCamera3DEntity.TransitionToCamera"/> 
     /// finishes running, signaling the camera manager to switch cameras. Attached to
-    /// the <see cref="CameraEntity3DManager.SetCurrentCamera"/> method.
+    /// the <see cref="Camera3DEntityPrioritySystem.SetCurrentCamera"/> method.
     /// </summary>
-    public static Action<CameraEntity3D> CameraChangedEvent { get => cameraChangedEvent; set => cameraChangedEvent = value; }
+    public static Action<Camera3DEntity> CameraChangedEvent { get => cameraChangedEvent; set => cameraChangedEvent = value; }
 
-    public static void BroadcastBeginChangeCameraEvent(CameraEntity3D toCamera3D)
+    public static void BroadcastBeginChangeCameraEvent(Camera3DEntity toCamera3D)
     {
         BeginChangeCameraEvent?.Invoke(toCamera3D);
     }
 
-    public static void BroadcastCameraChangedEvent(CameraEntity3D toCamera3D)
+    public static void BroadcastCameraChangedEvent(Camera3DEntity toCamera3D)
     {
         CameraChangedEvent?.Invoke(toCamera3D);
     }

@@ -19,9 +19,9 @@ public abstract partial class QueueAutomataComponent<[MustBeVariant] T> : StateM
             states.Add(state.ToString(), state);
             state.EnqueueState += Enqueue;
             state.DequeueSelf += DequeueFromState;
-            Init += state.Initialize;
+            BindStateDependencies += state.BindDependencies;
         }
-        EmitInit();
+        EmitBindStateDependencies();
         CurrentState = baseState;
         CurrentState.Enter();
     }

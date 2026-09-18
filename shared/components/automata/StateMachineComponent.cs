@@ -30,7 +30,8 @@ public partial class StateMachineComponent<[MustBeVariant] T> : Node where T : S
     /// Signal that's emitted when initializing the states. 
     /// </summary>
     /// <param name="objects">An array of Variant the states need for initializing .</param>
-    [Signal] public delegate void InitEventHandler(Array<GodotObject> objects);
+    [Signal] public delegate void BindStateDependenciesEventHandler(Array<GodotObject> objects);
+
     /// <summary>
     /// The generic array used in all state machines. Replace with
     /// new implementation on each outward facing state machine so 
@@ -48,9 +49,9 @@ public partial class StateMachineComponent<[MustBeVariant] T> : Node where T : S
                 baseState = state;
             states.Add(state.ToString(), state);
             state.TransitionToState += TransitionToState;
-            Init += state.Initialize;
+            BindStateDependencies += state.BindDependencies;
         }
-        EmitInit();
+        EmitBindStateDependencies();
         CurrentState = baseState;
         CurrentState.Enter();
     }
@@ -108,8 +109,8 @@ public partial class StateMachineComponent<[MustBeVariant] T> : Node where T : S
     {
         return states.ContainsKey(stateName);
     }
-    protected virtual void EmitInit()
+    protected virtual void EmitBindStateDependencies()
     {
-        EmitSignal(SignalName.Init);
+        EmitSignal(SignalName.BindStateDependencies);
     }
 }

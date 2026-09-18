@@ -1,50 +1,49 @@
 using Godot;
 using Shared.Buses;
-using Shared.Managers.Data;
+using Shared.Systems;
 
 
 namespace Shared.Entities.Screens;
 
 /// <summary>
-/// A black screen that fades in and out, emitting a signal 
-/// after fading to black and returning to normal.
+/// A black screen that fades in and out, emitting a signal after fading to black 
+/// and returning to normal.
 /// </summary>
 public partial class LoadScreenEntity : CanvasLayer
 {
     [Export] private AnimationPlayer animator;
     [Export] private ProgressBar progressBar;
+    
     private bool loading = false;
-
     private string scenePath;
 
     public override void _Ready()
     {
-        LoadScreenBus.LoadNewSceneEvent += LoadNewScene;
-        LoadScreenBus.LoadingStartedEvent += () => loading = true;
-
-        LoadScreenBus.ProgressChangedEvent += ProgressChanged;
-        LoadScreenBus.LoadingDoneEvent += LoadingDone;
+        animator.Queue(ScreenAnimation.Reset);
         animator.AnimationFinished += AnimationFinished;
 
-        animator.Queue(ScreenAnimation.Reset);
+        LoadSceneBus.LoadNewSceneEvent += LoadNewScene;
+        LoadSceneBus.LoadingStartedEvent += LoadingStarted;
+        LoadSceneBus.ProgressChangedEvent += ProgressChanged;
+        LoadSceneBus.LoadingDoneEvent += LoadingDone;
     }
     public override void _Process(double delta)
     {
         base._Process(delta);
-        CheckProgress();
+        CheckLoadingProgress();
     }
     private void AnimationFinished(StringName animName)
     {
         if (animName == ScreenAnimation.FadeToBlack) 
-            LoadScreenManager.StartLoadingScene(scenePath);
+            LoadSceneSystem.StartLoadingScene(scenePath);
         else if (animName == ScreenAnimation.FadeAway) 
             animator.Queue(ScreenAnimation.Reset);
     }
-    private void CheckProgress()
+    private void CheckLoadingProgress()
     {
         if (!loading) 
             return;
-        loading = LoadScreenManager.LoadProgress(scenePath);
+        loading = LoadSceneSystem.LoadingInProgressCheck(scenePath);
     }
 
     public void LoadNewScene(string scenePath)
@@ -52,6 +51,10 @@ public partial class LoadScreenEntity : CanvasLayer
         progressBar.Value = 0;
         this.scenePath = scenePath;
         animator.Queue(ScreenAnimation.FadeToBlack);
+    }
+    public void LoadingStarted()
+    {
+        loading = true;
     }
     private void ProgressChanged(Variant progress)
     {
@@ -63,7 +66,7 @@ public partial class LoadScreenEntity : CanvasLayer
     }
     public void LoadingDone()
     {
-        GetTree().ChangeSceneToPacked(LoadScreenManager.GetLoadedScene(scenePath));
+        GetTree().ChangeSceneToPacked(LoadSceneSystem.GetLoadedScene(scenePath));
         animator.Queue(ScreenAnimation.FadeAway);
     }
 }

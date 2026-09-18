@@ -17,4 +17,12 @@ So, I created this sharepack! Mostly for myself, but I figured other people migh
 
 This pack is built in C# and designed to be used with Godot C# projects. This is because I prefer C#, and I don't see as many people catering to C# or using C# in comparision with GDScript, so that gave me even more reason to tailor this project to C#. I will not be making a GDScript version, but if someone out there wants to, be my guest. 
 
-Everything in this project is stored in the "shared" folder and namespaced appropriately. This makes it easier to share between projects, as you can just copy the folder into your project and go. Namespaces also help a lot with organization, as everything is separated into its own folder and only accessible by explicit reference.
+Everything in this project is stored in the "shared" folder and namespaced appropriately. This makes it easier to share between projects, as you can just copy the folder into your project and go. Namespaces also help a lot with organization, as everything is separated into its own folder and only accessible by explicit reference. If you want to add to this pack, please follow that structure with your additions.
+
+This pack is meant to be made up of generic, reusable components. As such, a lot of the pieces necessary for these tools to be fully utilized is left out deliberately, and you're excepted to add in this functionality yourself. Any additions you wish to make to this pack should fall along these lines, as ideally I want this pack to contain tools that can be used for any game. 
+
+As the goal of this pack is to save time doing the grunt work so we can spend more time making the game, we don't want to add things that are actually fun or cool or interesting to implement. Options menus, title screens, saving and loading systems are all free game, but levels, mechanics, and game systems should be avoided. For an example, a cutscene system that allowed for a wide array of actions and game types would be allowed, but a fire system that spreads and damages enemies wouldn't be allowed. 
+
+## Current and Planned Features
+
+Currently 

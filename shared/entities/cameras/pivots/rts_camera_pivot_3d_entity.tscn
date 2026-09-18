@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://d1tt2tqxpbd6a"]
+
+[ext_resource type="Script" uid="uid://dama1i7mieppd" path="res://shared/entities/cameras/StationaryCamera3DEntity.cs" id="1_t0iqv"]
+[ext_resource type="Script" uid="uid://cb8n3vy5o2jvs" path="res://shared/resources/TweenResource.cs" id="2_eaemt"]
+[ext_resource type="Script" uid="uid://3vimfgfgla6d" path="res://shared/components/position/Position3DComponent.cs" id="3_bpfwt"]
+[ext_resource type="Script" uid="uid://bf3qyogb7xhkl" path="res://shared/components/inputs/JoystickMotionComponent.cs" id="4_8dbii"]
+[ext_resource type="Script" uid="uid://b5vote1ct6rex" path="res://shared/components/rotation/Rotation3DComponent.cs" id="5_3rna5"]
+[ext_resource type="Script" uid="uid://dbtaw4mpkqnjb" path="res://shared/components/inputs/MouseMotionComponent.cs" id="6_xptnx"]
+
+[sub_resource type="Resource" id="Resource_2htjv"]
+script = ExtResource("2_eaemt")
+
+[node name="RTSCameraPivot3DEntity" type="Node3D" unique_id=1361754159]
+
+[node name="SpringArm3D" type="SpringArm3D" parent="." unique_id=312802219]
+spring_length = 5.0
+
+[node name="RTSCamera3DEntity" type="Camera3D" parent="SpringArm3D" unique_id=594219956]
+script = ExtResource("1_t0iqv")
+tween = SubResource("Resource_2htjv")
+metadata/_custom_type_script = "uid://dama1i7mieppd"
+
+[node name="Position3DComponent" type="Node" parent="." unique_id=988244617]
+script = ExtResource("3_bpfwt")
+metadata/_custom_type_script = "uid://3vimfgfgla6d"
+
+[node name="JoystickMotionComponent" type="Node" parent="Position3DComponent" unique_id=502757969]
+script = ExtResource("4_8dbii")
+joystickType = 0
+metadata/_custom_type_script = "uid://bf3qyogb7xhkl"
+
+[node name="Rotation3DComponent" type="Node" parent="." unique_id=456039096]
+script = ExtResource("5_3rna5")
+allowRotationX = false
+metadata/_custom_type_script = "uid://b5vote1ct6rex"
+
+[node name="MouseMotionComponent" type="Node" parent="Rotation3DComponent" unique_id=655169941]
+script = ExtResource("6_xptnx")
+metadata/_custom_type_script = "uid://dbtaw4mpkqnjb"
+
+[node name="JoystickMotionComponent" type="Node" parent="Rotation3DComponent" unique_id=806109123]
+script = ExtResource("4_8dbii")
+metadata/_custom_type_script = "uid://bf3qyogb7xhkl"
+
+[connection signal="JoystickMoved" from="Position3DComponent/JoystickMotionComponent" to="Position3DComponent" method="ChangeDirection"]
+[connection signal="MouseMoved" from="Rotation3DComponent/MouseMotionComponent" to="Rotation3DComponent" method="Rotate"]
+[connection signal="JoystickMoved" from="Rotation3DComponent/JoystickMotionComponent" to="Rotation3DComponent" method="Rotate"]

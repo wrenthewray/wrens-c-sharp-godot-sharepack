@@ -1,7 +1,6 @@
-using System;
 using Godot;
+using System;
 using Newtonsoft.Json;
-using Shared.Managers.Pools;
 
 namespace Shared.Managers.Data;
 
@@ -10,7 +9,7 @@ namespace Shared.Managers.Data;
 /// to files using Godot's <see cref="FileAccess"/> class. In this class, files 
 /// are read and written to using JSON serialization and deserialization.
 /// </summary>
-public static class JsonDataManager
+public static class JsonFileManager
 {
     private static FileAccess OpenFile(string filePath, FileAccess.ModeFlags flag = FileAccess.ModeFlags.Read)
     {

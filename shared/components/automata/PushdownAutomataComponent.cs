@@ -32,9 +32,9 @@ public abstract partial class PushdownAutomataComponent<[MustBeVariant] T> : Sta
                 baseState = state;
             states.Add(state.ToString(), state);
             state.PushState += Push;
-            Init += state.Initialize;
+            BindStateDependencies += state.BindDependencies;
         }
-        EmitInit();
+        EmitBindStateDependencies();
         CurrentState = baseState;
         CurrentState.Enter();
         stateStack.Push(baseState);

@@ -69,14 +69,14 @@ public abstract partial class State : Resource
         return !left.Equals(right);
     }
     /// <summary>
-    /// This class is used to initialize a state's dependencies. The
+    /// This class is used to bind a state's dependencies. The
     /// specific dependencies will change depending on the base state's
     /// needs, so we need to implement this on each base state to meet 
     /// their specific requirements.
     /// </summary>
     /// <param name="dependencies">An array of godot objects to pass to the
     /// states during dependency injection.</param>
-    public abstract void Initialize(Array<GodotObject> dependencies);
+    public abstract void BindDependencies(Array<GodotObject> dependencies);
     protected virtual void TransitionTo(string stateName)
     {
         EmitSignal(SignalName.TransitionToState, stateName);
